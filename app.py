@@ -7,6 +7,13 @@ from audman import AudioManager
 
 class App():
     def __init__(self, title, resolution=(1024, 768), appstates=[]):
+        self.android = None
+        try:
+            import android
+            self.android = True
+        except ImportError:
+            self.android = None
+
         os.environ['SDL_VIDEO_CENTERED'] = '1'
 
         pygame.init()
@@ -15,6 +22,11 @@ class App():
         pygame.display.set_caption(title)
         self.screen = pygame.display.get_surface()
         self.is_running = True  # used to trigger exit by ESC
+
+        # Map the back button to the escape key.
+        if self.android:
+            android.init()
+            android.map_key(android.KEYCODE_BACK, pygame.K_ESCAPE)
 
         self.clock = pygame.time.Clock()
 

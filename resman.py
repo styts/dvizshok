@@ -12,7 +12,7 @@ def resource_path(relative):
     if getattr(sys, 'frozen', None):
         basedir = sys._MEIPASS  # production
     else:
-        basedir = os.path.join(os.path.dirname(__file__), "..", "..")  # dev
+        basedir = os.path.join(os.getcwd())  # dev
 
     #print basedir
 
