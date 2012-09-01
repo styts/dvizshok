@@ -114,7 +114,8 @@ class App():
                 pos_x, pos_y = event.pos
                 event.pos = tuple([pos_x - self.x, pos_y - self.y])
             except:
-                print "silly event:", event
+                #print "silly event:", event
+                pass
             p = self.appstate.process_input(event)
 
             # ESC quits app
