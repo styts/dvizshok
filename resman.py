@@ -25,7 +25,6 @@ def resource_path(relative):
 class ResourceManager():
     LOCATION_SPRITES = resource_path("data/sprites")
     LOCATION_SOUNDS = resource_path("data/sounds")
-    LOCATION_FONTS = resource_path("data/fonts")
     LOCATION_LEVELS = resource_path("data/levels")
 
     def __init__(self, app):
@@ -47,19 +46,17 @@ class ResourceManager():
             self._surfaces[bn] = {}
             self._surfaces[bn]["default"] = surf
 
+        try:
+            import pygame.mixer as mixer
+        except ImportError:
+            import android.mixer as mixer
+
         ## load sfx
         ext = ".wav"
         for fn in glob.glob(ResourceManager.LOCATION_SOUNDS + "/*%s" % ext):
             bn = os.path.basename(fn).replace(ext, "")
-            sound = pygame.mixer.Sound(fn)
+            sound = mixer.Sound(fn)
             self._sounds[bn] = sound
-
-        ## load fonts
-        ext = ".ttf"
-        for fn in glob.glob(ResourceManager.LOCATION_FONTS + "/*%s" % ext):
-            bn = os.path.basename(fn).replace(ext, "")
-            font = pygame.font.Font(fn, 20)
-            self._fonts[bn] = font
 
     def fill_me(self, surf, color, alpha_decr):
         s = surf.copy()
@@ -90,6 +87,10 @@ class ResourceManager():
 
     def get_sound(self, name):
         return self._sounds[name]
+
+    def load_font(self, name, size):
+        font = pygame.font.Font(resource_path(os.path.join('data', 'fonts', '%s.ttf' % name)), size)
+        self._fonts["%s_%s" % (name, size)] = font
 
     def get_font(self, name):
         return self._fonts[name]

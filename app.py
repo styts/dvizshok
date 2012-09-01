@@ -6,7 +6,7 @@ from audman import AudioManager
 
 
 class App():
-    def __init__(self, title, resolution=(1024, 768), appstates=[]):
+    def __init__(self, title, resolution=(1024, 768), appstates=[], fps=30):
         self.android = None
         try:
             import android
@@ -29,17 +29,22 @@ class App():
             android.map_key(android.KEYCODE_BACK, pygame.K_ESCAPE)
 
         self.clock = pygame.time.Clock()
+        self._fps = fps
 
         self.resman = ResourceManager(self)
         self.audioman = AudioManager(self)
 
-        self.font = self.resman.get_font("default")
+        self._dirty_rects = []
+        self.init()
 
         self._appstates = []
         for asc in appstates:
             s = asc(self)
             self._appstates.append(s)
         self.appstate = self._appstates[0]
+
+    def init(self):
+        pass
 
     def run(self):
         ## Main Loop
@@ -58,7 +63,7 @@ class App():
             self._dirty_rects.append(r)
 
     def process(self):
-        self.clock.tick(30)
+        self.clock.tick(self._fps)
 
         self._dirty_rects = []
 
