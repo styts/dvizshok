@@ -25,6 +25,7 @@ def resource_path(relative):
 class ResourceManager():
     LOCATION_SPRITES = resource_path("data/sprites")
     LOCATION_SOUNDS = resource_path("data/sounds")
+    LOCATION_FONTS = resource_path("data/fonts")
     LOCATION_LEVELS = resource_path("data/levels")
 
     def __init__(self, app):
@@ -32,6 +33,7 @@ class ResourceManager():
         self._surfaces = {}
         self._sounds = {}
         self._levels = []
+        self._fonts = {}
         self._load_all()
 
     def _load_all(self):
@@ -51,6 +53,13 @@ class ResourceManager():
             bn = os.path.basename(fn).replace(ext, "")
             sound = pygame.mixer.Sound(fn)
             self._sounds[bn] = sound
+
+        ## load fonts
+        ext = ".ttf"
+        for fn in glob.glob(ResourceManager.LOCATION_FONTS + "/*%s" % ext):
+            bn = os.path.basename(fn).replace(ext, "")
+            font = pygame.font.Font(fn, 20)
+            self._fonts[bn] = font
 
     def fill_me(self, surf, color, alpha_decr):
         s = surf.copy()
@@ -81,6 +90,9 @@ class ResourceManager():
 
     def get_sound(self, name):
         return self._sounds[name]
+
+    def get_font(self, name):
+        return self._fonts[name]
 
     def get_levels(self):
         return self._levels

@@ -33,6 +33,8 @@ class App():
         self.resman = ResourceManager(self)
         self.audioman = AudioManager(self)
 
+        self.font = self.resman.get_font("default")
+
         self._appstates = []
         for asc in appstates:
             s = asc(self)
