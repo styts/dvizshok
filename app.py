@@ -13,9 +13,9 @@ except ImportError:
 
 
 class App():
-    FULLSCREEN = True
-
-    def __init__(self, title, resolutions=[(1024, 768), (960, 640), (854, 480), (800, 480), (640, 480), (480, 320)], appstates=[], fps=30):
+    def __init__(self, title, fullscreen=False,
+     resolutions=[(1024, 768), (960, 640), (854, 480), (800, 480), (640, 480), (480, 320)],
+     appstates=[], fps=30, version="0.1"):
         global on_android
 
         os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -30,15 +30,17 @@ class App():
 
         self.screen_w, self.screen_h = r
 
-        if App.FULLSCREEN:
-            pygame.display.set_mode((vidinfo.current_w, vidinfo.current_h),  pygame.FULLSCREEN)
+        if fullscreen:
+            pygame.display.set_mode((vidinfo.current_w, vidinfo.current_h))
             self.fullscreen = pygame.display.get_surface()
             self.screen = pygame.Surface((self.screen_w, self.screen_h))
             self.x = 0
             self.y = 0
+            self.b_fullscreen = True
         else:
             pygame.display.set_mode((self.screen_w, self.screen_h))
             self.screen = pygame.display.get_surface()
+            self.b_fullscreen = False
 
         pygame.display.set_caption(title)
 
@@ -57,6 +59,8 @@ class App():
 
         self._dirty_rects = []
         self.init()
+
+        self.version = version
 
         self._appstates = []
         for asc in appstates:
@@ -131,11 +135,10 @@ class App():
                 False, (255, 255, 255), (0, 0, 0))
             self.dirty(self.screen.blit(fps_surf, (0, 0)))
 
-        #pygame.display.update(self._dirty_rects)
-        self.x = self.fullscreen.get_width() / 2 - self.screen.get_width() / 2
-        self.y = self.fullscreen.get_height() / 2 - self.screen.get_height() / 2
-        self.fullscreen.blit(self.screen, (self.x, self.y))
-        #pygame.display.flip()
+        if self.b_fullscreen:
+            self.x = self.fullscreen.get_width() / 2 - self.screen.get_width() / 2
+            self.y = self.fullscreen.get_height() / 2 - self.screen.get_height() / 2
+            self.fullscreen.blit(self.screen, (self.x, self.y))
+
         pygame.display.update(self._dirty_rects)
-        #print self._dirty_rects
         pygame.event.pump()
